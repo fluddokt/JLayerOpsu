@@ -74,6 +74,9 @@ public final class Header
 	private int				h_vbr_scale;
 	private int				h_vbr_bytes;
 	private byte[]			h_vbr_toc;
+	private int 			h_vbr_delay;
+	private boolean			h_vbr_isXing;
+
 	
 	private byte			syncmode = Bitstream.INITIAL_SYNC;
 	private Crc16			crc;
@@ -240,8 +243,12 @@ public final class Header
 	 */
 	void parseVBR(byte[] firstframe) throws BitstreamException
 	{
+		//for(int i=0;i<firstframe.length && i<100; i++){
+		//	System.out.print((char)firstframe[i]);
+		//}
 		// Trying Xing header.
 		String xing = "Xing";
+		String lame = "Info";
 		byte tmp[] = new byte[4];
 		int offset = 0;
 		// Compute "Xing" offset depending on MPEG version and channels.
@@ -258,11 +265,14 @@ public final class Header
 		try
 		{
 			System.arraycopy(firstframe, offset, tmp, 0, 4);
+			//System.out.println("["+new String(tmp).trim()+"]");
 			// Is "Xing" ?
-			if (xing.equals(new String(tmp)))
+			String tmpStr = new String(tmp);
+			if (xing.equals(tmpStr) || lame.equals(tmpStr))
 			{
 				//Yes.
 				h_vbr = true;
+				h_vbr_isXing = true;
 				h_vbr_frames = -1;
 				h_vbr_bytes = -1;
 				h_vbr_scale = -1;
@@ -272,6 +282,7 @@ public final class Header
 				// Read flags.
 				byte flags[] = new byte[4];
 				System.arraycopy(firstframe, offset + length, flags, 0, flags.length);
+				//System.out.println(flags[0]+" "+flags[1]+" "+flags[2]+" "+flags[3]);
 				length += flags.length;
 				// Read number of frames (if available).
 				if ((flags[3] & (byte) (1 << 0)) != 0)
@@ -300,8 +311,45 @@ public final class Header
 					h_vbr_scale = (tmp[0] << 24)&0xFF000000 | (tmp[1] << 16)&0x00FF0000 | (tmp[2] << 8)&0x0000FF00 | tmp[3]&0x000000FF;
 					length += 4;	
 				}
-				//System.out.println("VBR:"+xing+" Frames:"+ h_vbr_frames +" Size:"+h_vbr_bytes);			
-			}				
+				//System.out.println("VBR:"+tmpStr+" Frames:"+ h_vbr_frames +" Size:"+h_vbr_bytes+" Scale:"+h_vbr_scale);
+				
+				//http://gabriel.mp3-tech.org/mp3infotag.html#versionstring
+				
+				//versionString 
+				//String version = new String(firstframe, offset + length, 9).trim();
+				//System.out.println("Version :" +version+" ["+version.length());
+				length += 9;
+
+				//Info Tag revision + VBR method
+				//System.out.println("InfoRev + VBR method "+((firstframe[offset + length]>>4)&0xf)+" "+((firstframe[offset + length])&0xf));
+				length++;
+				
+				//System.out.println("LowPass Filter "+firstframe[offset + length]);
+				length++;
+
+				//System.out.print("Replay Gain ");
+				for(int i=0; i<8; i++){
+					//System.out.print(firstframe[offset + length]+" ");
+					length++;
+				}
+				//System.out.println();
+				
+				//System.out.println("Encoding flags "+firstframe[offset + length]);
+				length++;
+				
+				//System.out.println("ABR "+firstframe[offset + length]);
+				length++;
+				
+				//System.out.print("delay ");
+				{
+					int a = firstframe[offset + length]&0xff;
+					int b = firstframe[offset + length + 1]&0xff;
+					int c = firstframe[offset + length + 2]&0xff;
+					h_vbr_delay = (a<<4|((b>>4)&0xf));
+					//System.out.println(h_vbr_delay +" "+ ((b&0xf)<<8 | c));
+					length+=3;
+				}
+			}
 		}
 		catch (ArrayIndexOutOfBoundsException e)
 		{
@@ -317,6 +365,7 @@ public final class Header
 			// Is "VBRI" ?
 			if (vbri.equals(new String(tmp)))
 			{
+				//http://www.codeproject.com/Articles/8295/MPEG-Audio-Frame-Header
 				//Yes.
 				h_vbr = true;
 				h_vbr_frames = -1;
@@ -324,7 +373,17 @@ public final class Header
 				h_vbr_scale = -1;
 				h_vbr_toc = new byte[100];
 				// Bytes.				
-				int length = 4 + 6;
+				int length = 4;
+				//System.out.println("Version: "+((firstframe[offset + length]&0xff)<<8 | (firstframe[offset + length + 1]&0xff)));
+				length+=2;
+				
+				h_vbr_delay = (firstframe[offset + length]&0xff)<<8 | (firstframe[offset + length + 1]&0xff);
+				//System.out.println("Delay: "+h_vbr_delay);
+				length+=2;
+				
+				//System.out.println("Quality: "+((firstframe[offset + length]&0xff)<<8 | (firstframe[offset + length + 1]&0xff)));
+				length+=2;
+				
 				System.arraycopy(firstframe, offset + length, tmp, 0, tmp.length);
 				h_vbr_bytes = (tmp[0] << 24)&0xFF000000 | (tmp[1] << 16)&0x00FF0000 | (tmp[2] << 8)&0x0000FF00 | tmp[3]&0x000000FF;
 				length += 4;	
@@ -332,9 +391,7 @@ public final class Header
 				System.arraycopy(firstframe, offset + length, tmp, 0, tmp.length);
 				h_vbr_frames = (tmp[0] << 24)&0xFF000000 | (tmp[1] << 16)&0x00FF0000 | (tmp[2] << 8)&0x0000FF00 | tmp[3]&0x000000FF;
 				length += 4;	
-				//System.out.println("VBR:"+vbri+" Frames:"+ h_vbr_frames +" Size:"+h_vbr_bytes);
-				// TOC
-				// TODO				
+				//System.out.println("VBRI:"+vbri+" Frames:"+ h_vbr_frames +" Size:"+h_vbr_bytes);
 			}
 		}
 		catch (ArrayIndexOutOfBoundsException e)
@@ -404,6 +461,18 @@ public final class Header
 	 * @return scale of -1 if not available
 	 */
 	public int vbr_scale() { return h_vbr_scale; }
+	
+	/**
+	 * Return VBR delay.
+	 * @return delay of -1 if not available
+	 */
+	public int vbr_delay() { return h_vbr_delay; }
+
+	/**
+	 * Return if VBR is Xing Header.
+	 * @return if has Xing Header
+	 */
+	public boolean vbr_isXing() { return h_vbr_isXing; }
 
 	/**
 	 * Return VBR TOC.
