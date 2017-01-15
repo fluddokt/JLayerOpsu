@@ -17,7 +17,7 @@
  *----------------------------------------------------------------------
  */
 
-package javazoom.jl.player.advanced;
+package javazoom2.jl.player.advanced;
 
 /**
  * Listener for javalayer Player playback

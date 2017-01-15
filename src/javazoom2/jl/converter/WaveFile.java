@@ -23,7 +23,7 @@
  *----------------------------------------------------------------------
  */
 
-package javazoom.jl.converter;
+package javazoom2.jl.converter;
 
 /**
  * Class allowing WaveFormat Access

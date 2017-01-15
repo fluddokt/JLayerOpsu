@@ -18,7 +18,7 @@
  *----------------------------------------------------------------------
  */
 
-package javazoom.jl.converter;
+package javazoom2.jl.converter;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -27,11 +27,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 
-import javazoom.jl.decoder.Bitstream;
-import javazoom.jl.decoder.Decoder;
-import javazoom.jl.decoder.Header;
-import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.decoder.Obuffer;
+import javazoom2.jl.decoder.Bitstream;
+import javazoom2.jl.decoder.Decoder;
+import javazoom2.jl.decoder.Header;
+import javazoom2.jl.decoder.JavaLayerException;
+import javazoom2.jl.decoder.Obuffer;
 
 /**
  * The <code>Converter</code> class implements the conversion of

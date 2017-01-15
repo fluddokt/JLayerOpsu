@@ -18,7 +18,7 @@
  *----------------------------------------------------------------------
  */
 
-package javazoom.jl.player;
+package javazoom2.jl.player;
 
 /**
  * The <code>NullAudioDevice</code> implements a silent, no-op

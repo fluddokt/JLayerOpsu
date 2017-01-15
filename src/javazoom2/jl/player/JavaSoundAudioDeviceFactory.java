@@ -18,9 +18,9 @@
  *----------------------------------------------------------------------
  */
 
-package javazoom.jl.player;
+package javazoom2.jl.player;
 
-import javazoom.jl.decoder.JavaLayerException;
+import javazoom2.jl.decoder.JavaLayerException;
 
 /**
  * This class is responsible for creating instances of the

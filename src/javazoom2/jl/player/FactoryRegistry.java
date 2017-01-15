@@ -18,12 +18,12 @@
  *----------------------------------------------------------------------
  */
 
-package javazoom.jl.player;
+package javazoom2.jl.player;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import javazoom.jl.decoder.JavaLayerException;
+import javazoom2.jl.decoder.JavaLayerException;
 
 /**
  * The <code>FactoryRegistry</code> class stores the factories

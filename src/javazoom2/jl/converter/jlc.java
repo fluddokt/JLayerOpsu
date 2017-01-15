@@ -26,13 +26,13 @@
  *----------------------------------------------------------------------
  */
 
-package javazoom.jl.converter;
+package javazoom2.jl.converter;
 
 import java.io.PrintWriter;
 
-import javazoom.jl.decoder.Crc16;
-import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.decoder.OutputChannels;
+import javazoom2.jl.decoder.Crc16;
+import javazoom2.jl.decoder.JavaLayerException;
+import javazoom2.jl.decoder.OutputChannels;
 
 /**
  * The <code>jlc</code> class presents the JavaLayer

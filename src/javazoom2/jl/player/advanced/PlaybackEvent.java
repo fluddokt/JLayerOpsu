@@ -17,7 +17,7 @@
  *----------------------------------------------------------------------
  */
 
-package javazoom.jl.player.advanced;
+package javazoom2.jl.player.advanced;
 
 /**
  * An event which indicates a <code>Player</code> has performed an 'playback action'

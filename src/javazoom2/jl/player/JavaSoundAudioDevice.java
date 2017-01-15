@@ -22,7 +22,7 @@
  *----------------------------------------------------------------------
  */
 
-package javazoom.jl.player;
+package javazoom2.jl.player;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
@@ -31,8 +31,8 @@ import javax.sound.sampled.Line;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
-import javazoom.jl.decoder.Decoder;
-import javazoom.jl.decoder.JavaLayerException;
+import javazoom2.jl.decoder.Decoder;
+import javazoom2.jl.decoder.JavaLayerException;
 
 /**
  * The <code>JavaSoundAudioDevice</code> implements an audio

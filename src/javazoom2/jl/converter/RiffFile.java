@@ -23,7 +23,7 @@
  *----------------------------------------------------------------------
  */
 
-package javazoom.jl.converter;
+package javazoom2.jl.converter;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
