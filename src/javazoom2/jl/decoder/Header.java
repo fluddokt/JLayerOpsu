@@ -76,6 +76,7 @@ public final class Header
 	private byte[]			h_vbr_toc;
 	private int 			h_vbr_delay;
 	private boolean			h_vbr_isXing;
+	private boolean			h_vbr_isLame;
 
 	
 	private byte			syncmode = Bitstream.INITIAL_SYNC;
@@ -268,11 +269,13 @@ public final class Header
 			//System.out.println("["+new String(tmp).trim()+"]");
 			// Is "Xing" ?
 			String tmpStr = new String(tmp);
-			if (xing.equals(tmpStr) || lame.equals(tmpStr))
+			h_vbr_isXing = xing.equals(tmpStr);
+			h_vbr_isLame = lame.equals(tmpStr);
+			
+			if (h_vbr_isXing || h_vbr_isLame)
 			{
 				//Yes.
 				h_vbr = true;
-				h_vbr_isXing = true;
 				h_vbr_frames = -1;
 				h_vbr_bytes = -1;
 				h_vbr_scale = -1;
@@ -473,6 +476,12 @@ public final class Header
 	 * @return if has Xing Header
 	 */
 	public boolean vbr_isXing() { return h_vbr_isXing; }
+
+	/**
+	 * Return if VBR is Lame Header.
+	 * @return if has Lame Header
+	 */
+	public boolean vbr_isLame() { return h_vbr_isLame; }
 
 	/**
 	 * Return VBR TOC.
